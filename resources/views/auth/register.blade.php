@@ -12,6 +12,14 @@
     <div class="container">
         <h1>Register</h1>
     </div>
+
+    @if(session('status'))
+        <div class="text-danger">
+            {{session('status')}}
+
+        </div>
+    @endif
+
 </header>
 <main class="py-4">
     <div class="container">
