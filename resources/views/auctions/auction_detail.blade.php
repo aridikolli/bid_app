@@ -1,3 +1,21 @@
+
+@php
+    use Illuminate\Support\Facades\DB;
+    function dateDiffInDays($date1, $date2)
+            {
+                $diff = strtotime($date2) - strtotime($date1);
+                return abs(round($diff / 86400));
+            }
+            $dt = new DateTime();
+            $current_date= $dt->format('Y-m-d');
+
+@endphp
+    @if($auction==null)
+     @php
+     return redirect()->route('newAuction');
+     @endphp
+    @endif
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +35,21 @@
         </div>
     </div>
 </header>
+
 <main class="py-4">
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h2>Auction Name</h2>
-                <p>Auction Creator: John Doe</p>
-                <p>Time Remaining: 3 days</p>
-                <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet libero nec nisi pulvinar venenatis sed vel nisl.</p>
+                <h2>Auction Name: {{$auction->name}}</h2>
+                @php
+                    $user=DB::table('users')->where('id',$auction->user_id)->first();
+                @endphp
+                <p>Auction Creator: {{$user->username}}</p>
+                @php
+                    $dayDifference = dateDiffInDays($auction->end_date, $current_date);
+                @endphp
+                <p>Time Remaining: {{$dayDifference}} Days</p>
+                <p>Description : {{$auction->description}}</p>
                 <p>Current Highest Bid: $500</p>
                 <p>Highest Bidder: Jane Smith</p>
                 <form>
