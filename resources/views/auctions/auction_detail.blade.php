@@ -1,6 +1,8 @@
 
 @php
     use Illuminate\Support\Facades\DB;
+    use App\Models\User;
+
     function dateDiffInDays($date1, $date2)
             {
                 $diff = strtotime($date2) - strtotime($date1);
@@ -30,8 +32,8 @@
     <div class="container d-flex justify-content-between align-items-center">
         <h1>All Auctions</h1>
         <div>
-            <a href="#" class="btn btn-success"> Home </a>
-            <a href="#" class="btn btn-danger">Logout</a>
+            <a href="{{route('home')}}" class="btn btn-success"> Home </a>
+            <a href="{{route('logout')}}" class="btn btn-danger">Logout</a>
         </div>
     </div>
 </header>
@@ -40,6 +42,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
+                @if(session('status'))
+                    <div class="text-danger">
+                        {{session('status')}}
+
+                    </div>
+                @endif
                 <h2>Auction Name: {{$auction->name}}</h2>
                 @php
                     $user=DB::table('users')->where('id',$auction->user_id)->first();
@@ -47,18 +55,33 @@
                 <p>Auction Creator: {{$user->username}}</p>
                 @php
                     $dayDifference = dateDiffInDays($auction->end_date, $current_date);
+                    $bidder=User::find($auction->bidder_id);
                 @endphp
                 <p>Time Remaining: {{$dayDifference}} Days</p>
                 <p>Description : {{$auction->description}}</p>
-                <p>Current Highest Bid: $500</p>
-                <p>Highest Bidder: Jane Smith</p>
-                <form>
-                    <div class="form-group">
-                        <label for="bidAmount">Your Bid:</label>
-                        <input type="number" class="form-control" id="bidAmount" placeholder="Enter bid amount" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Bid</button>
-                </form>
+                @if($auction->bidder_id==null)
+                <p> No bids yet for this product </p>
+                 <p> Inital price is {{$auction->starting_bid}}</p>
+                @else
+
+                    <p>Current Highest Bid: {{$auction->highest_bid}}</p>
+
+                    <p>Highest Bidder: {{$bidder->username}}</p>
+                @endif
+                @if(auth()->user()->id==$auction->user_id)
+                        <a href="{{route('home')}}" class="btn btn-success">Home</a>
+                    @else
+                        <form method="POST" action="{{route('saveBid')}}">
+                            @csrf
+                            <div class="form-group">
+                                <input type="hidden" name="id" value="{{$auction->id}}">
+                                <label for="bidAmount">Your Bid:</label>
+                                <input type="number"  name="amount" class="form-control" id="bidAmount" placeholder="Enter bid amount" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Bid</button>
+                        </form>
+                @endif
+
             </div>
         </div>
     </div>

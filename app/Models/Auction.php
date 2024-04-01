@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Auction extends Model
 {
@@ -19,4 +20,11 @@ class Auction extends Model
         'end_date',
         'user_id'
     ];
+    use SoftDeletes;
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
+
+
 }

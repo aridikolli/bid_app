@@ -75,7 +75,11 @@
                     </div>
                     @enderror
                     <button type="submit" class="btn btn-primary">Register</button>
+
                 </form>
+                <h3 class="justify-content center mt-5"> Do you have an account ? </h3>
+                <a href="{{route('login')}}" class="mt-5 btn btn-primary"> Login here </a>
+
             </div>
         </div>
     </div>

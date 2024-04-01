@@ -1,9 +1,11 @@
 @php
     use Illuminate\Support\Facades\DB;
+    use App\Models\Auction;
+    use App\Models\User;
     function dateDiffInDays($date1, $date2)
             {
                 $diff = strtotime($date2) - strtotime($date1);
-                return abs(round($diff / 86400));
+                return -(round($diff / 86400));
             }
             $dt = new DateTime();
             $current_date= $dt->format('Y-m-d');
@@ -26,7 +28,7 @@
         <h1>All Auctions</h1>
         <div>
             <span class="mr-3">Hello, {{auth()->user()->username}}</span>
-            <a href="#" class="btn btn-danger">Logout</a>
+            <a href="{{route('logout')}}" class="btn btn-danger">Logout</a>
         </div>
     </div>
 </header>
@@ -44,32 +46,38 @@
         <main class="py-4">
             <div class="container">
                 <div class="row">
+
+
     @foreach($auctions as $auction)
+
                         @php
                             $dayDifference = dateDiffInDays($auction->end_date, $current_date);
                         @endphp
-                        <!-- Static data for demonstration -->
+
                         <div class="col-lg-4 mb-4">
                             <div class="card">
-                                <div class="car@if($auction ==null)
-
-@endifd-body">
+                                <div class="card-body" style="height: 200px">
 
                                     <a href="/auctions/{{$auction->id}}">
 
-                                        <h5 class="card-title">Product {{$auction->name}} </h5>
+                                        <h5 class="card-title">Product : {{$auction->name}} </h5>
                                     </a>
                                     @php
                                     $user=DB::table('users')->where('id',$auction->user_id)->first();
                                      @endphp
                                     <p class="card-text">Seller : {{$user->username}}.</p>
-                                    <p class="card-text">Top Bid: $100</p>
+                                    @if($auction->bidder_id)
+                                        <p class="card-text">Top Bid: {{$auction->highest_bid}}</p>
+                                    @else
+                                        <p class="card-text">No actual bid yet</p>
+
+                                    @endif
 
 
                                     <p class="card-text">Time Remaining: {{$dayDifference}} days</p>
 
                                     @if($user->username===auth()->user()->username)
-                                        <a href="#" class="btn btn-primary">Delete</a>
+                                        <a href="auctions/delete/{{$auction->id}}" class="btn btn-primary">Delete</a>
                                     @endif
                                 </div>
                             </div>
@@ -78,26 +86,11 @@
 
     @endforeach
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <!-- End of static data -->
             @endif
 
         </div>
-        <a href="" class="mt-4 bg-light p-3 rounded">New Auction</a>
-        <h3 class="text-center mt-4 bg-light p-3 rounded">Your current wallet: 200 $</h3>
+        <a href="{{route('newAuction')}}" class=" bg-light p-3 rounded">New Auction</a>
+        <h3 class="text-center mt-4 bg-light p-3 rounded">Your current wallet: {{auth()->user()->balance}}</h3>
     </div>
 </main>
 <footer class="bg-dark text-light py-3">

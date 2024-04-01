@@ -12,8 +12,8 @@
     <div class="container d-flex justify-content-between align-items-center">
         <h1>All Auctions</h1>
         <div>
-            <a href="#" class="btn btn-success"> Home </a>
-            <a href="#" class="btn btn-danger">Logout</a>
+            <a href="{{route('home')}}" class="btn btn-success"> Home </a>
+            <a href="{{route('logout')}}" class="btn btn-danger">Logout</a>
         </div>
     </div>
 </header>

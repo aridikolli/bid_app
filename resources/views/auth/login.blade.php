@@ -41,6 +41,8 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
+                <h3 class="justify-content center mt-5"> Don't you have an account ? </h3>
+                <a href="{{route('register')}}" class="mt-5 btn btn-primary"> Register here </a>
             </div>
         </div>
     </div>
